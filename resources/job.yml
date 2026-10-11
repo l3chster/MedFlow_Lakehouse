@@ -21,12 +21,12 @@ resources:
       tasks:
         - task_key: external_table_connection
           environment_key: default
-          notebook_task:
-            notebook_path: ../EXTERNAL_TABLE_CONNECTION.py
+          spark_python_task:
+            python_file: ../EXTERNAL_TABLE_CONNECTION.py
         - task_key: zerobus_patients
           environment_key: default
-          notebook_task:
-            notebook_path: ../ZEROBUS_patients_ingest.py
+          spark_python_task:
+            python_file: ../ZEROBUS_patients_ingest.py
         - task_key: run_pipeline
           depends_on:
             - task_key: external_table_connection
