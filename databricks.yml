@@ -4,7 +4,9 @@ bundle:
 include:
   - resources/*.yml
 
-variables:
+variables:  
+  workspace_url:
+    description: Workspace URL
   catalog_name:
     description: Unity Catalog for bronze/silver/gold tables
     default: dbr_dev
@@ -24,7 +26,7 @@ targets:
   dev:
     default: true
     mode: development
-    workspace:      
+    workspace:        
     variables:
       csv_api_app_url: "https://${var.csv_api_app_name}-${var.zerobus_workspace_id}.0.azure.databricksapps.com/api/stream"
 
