@@ -9,4 +9,4 @@ resources:
         hospital.ingestion.catalog_name: ${var.catalog_name}
       libraries:
         - glob:
-            include: ../hospital_ingestion_pipeline/transformations/*.py
+            include: ../hospital_ingestion_pipeline/transformations/**
