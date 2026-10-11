@@ -25,6 +25,7 @@ jobs:
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_DEV }}
 
       # variables      
+      BUNDLE_VAR_workspace_url: ${{ secrets.DATABRICKS_HOST_DEV }}
       BUNDLE_VAR_zerobus_workspace_id: ${{ secrets.ZEROBUS_WORKSPACE_ID_DEV }}
       BUNDLE_VAR_catalog_name: ${{ secrets.CATALOG_NAME_DEV }}
       BUNDLE_VAR_csv_api_app_name: ${{ secrets.CSV_API_APP_NAME_DEV }}
@@ -51,6 +52,7 @@ jobs:
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_PROD }}
 
       #variables      
+      BUNDLE_VAR_workspace_url: ${{ secrets.DATABRICKS_HOST_DEV }}
       BUNDLE_VAR_zerobus_workspace_id: ${{ secrets.ZEROBUS_WORKSPACE_ID_PROD }}
       BUNDLE_VAR_catalog_name: ${{ secrets.CATALOG_NAME_PROD }}
       BUNDLE_VAR_csv_api_app_name: ${{ secrets.CSV_API_APP_NAME_PROD }}
