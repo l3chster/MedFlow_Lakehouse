@@ -24,12 +24,11 @@ jobs:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_DEV }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_DEV }}
 
-      # variables
-      TF_VAR_workspace_url: ${{ secrets.DATABRICKS_HOST_DEV }}
-      TF_VAR_zerobus_workspace_id: ${{ secrets.ZEROBUS_WORKSPACE_ID_DEV }}
-      TF_VAR_catalog_name: ${{ secrets.CATALOG_NAME_DEV }}
-      TF_VAR_csv_api_app_name: ${{ secrets.CSV_API_APP_NAME_DEV }}
-      TF_VAR_zerobus_region: ${{ secrets.ZEROBUS_REGION_DEV }}
+      # variables      
+      BUNDLE_VAR_zerobus_workspace_id: ${{ secrets.ZEROBUS_WORKSPACE_ID_DEV }}
+      BUNDLE_VAR_catalog_name: ${{ secrets.CATALOG_NAME_DEV }}
+      BUNDLE_VAR_csv_api_app_name: ${{ secrets.CSV_API_APP_NAME_DEV }}
+      BUNDLE_VAR_zerobus_region: ${{ secrets.ZEROBUS_REGION_DEV }}
 
     steps:
       - uses: actions/checkout@v7
@@ -51,12 +50,11 @@ jobs:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_PROD }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_PROD }}
 
-      #variables
-      TF_VAR_workspace_url: ${{ secrets.DATABRICKS_HOST_PROD }}
-      TF_VAR_zerobus_workspace_id: ${{ secrets.ZEROBUS_WORKSPACE_ID_PROD }}
-      TF_VAR_catalog_name: ${{ secrets.CATALOG_NAME_PROD }}
-      TF_VAR_csv_api_app_name: ${{ secrets.CSV_API_APP_NAME_PROD }}
-      TF_VAR_zerobus_region: ${{ secrets.ZEROBUS_REGION_PROD }}
+      #variables      
+      BUNDLE_VAR_zerobus_workspace_id: ${{ secrets.ZEROBUS_WORKSPACE_ID_PROD }}
+      BUNDLE_VAR_catalog_name: ${{ secrets.CATALOG_NAME_PROD }}
+      BUNDLE_VAR_csv_api_app_name: ${{ secrets.CSV_API_APP_NAME_PROD }}
+      BUNDLE_VAR_zerobus_region: ${{ secrets.ZEROBUS_REGION_PROD }}
 
     steps:
       - uses: actions/checkout@v7
