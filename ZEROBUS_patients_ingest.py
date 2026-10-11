@@ -1,21 +1,3 @@
-# Databricks notebook source
-# /// script
-# [tool.databricks.environment]
-# environment_version = "6"
-# dependencies = [
-#   "databricks-zerobus-ingest-sdk",
-# ]
-# ///
-# MAGIC %md
-# MAGIC ### Preparing the Environment
-
-# COMMAND ----------
-
-# MAGIC %pip install databricks-zerobus-ingest-sdk
-# MAGIC %restart_python
-
-# COMMAND ----------
-
 import json
 import logging
 from zerobus.sdk.sync import ZerobusSdk
@@ -24,12 +6,6 @@ from databricks.sdk import WorkspaceClient
 from datetime import datetime, timezone
 import requests
 
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Configuration
-
-# COMMAND ----------
 
 def _param(name):
     try:
@@ -58,8 +34,6 @@ csv_api_app_url = _param("csv_api_app_url")
 CLIENT_ID = dbutils.secrets.get(scope="scope_blech", key="sp-databricks-adls-appid")
 CLIENT_SECRET = dbutils.secrets.get(scope="scope_blech", key="sp-databricks-adls-appkey")
 
-# COMMAND ----------
-
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.{SCHEMA}")
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.hospital_silver")
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.hospital_gold")
@@ -72,18 +46,9 @@ spark.sql(f"""
         )
         """)
 
-# COMMAND ----------
-
 spark.sql(f"GRANT USE CATALOG ON CATALOG {CATALOG} TO " + "`" + CLIENT_ID + "`;").collect()
 spark.sql(f"GRANT USE SCHEMA ON SCHEMA {CATALOG}.{SCHEMA} TO " + "`" + CLIENT_ID + "`;").collect()
 spark.sql(f"GRANT MODIFY, SELECT ON TABLE {CATALOG}.{SCHEMA}.{TABLE} TO " + "`" + CLIENT_ID + "`;").collect()
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Implementing Sync Client
-
-# COMMAND ----------
 
 logging.basicConfig(
     level=logging.INFO,
@@ -100,8 +65,6 @@ client_secret = CLIENT_SECRET
 sdk = ZerobusSdk(server_endpoint, unity_catalog_url=workspace_url)
 table_properties = TableProperties(table_name)
 options = StreamConfigurationOptions(record_type=RecordType.JSON)
-
-# COMMAND ----------
 
 w = WorkspaceClient()
 
@@ -127,8 +90,6 @@ def get_audience_token() -> str:
     resp.raise_for_status()
     return resp.json()["access_token"]
 
-
-# COMMAND ----------
 
 stream = sdk.create_stream(client_id, client_secret, table_properties, options)
 
