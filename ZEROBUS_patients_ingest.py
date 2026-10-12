@@ -1,4 +1,5 @@
 # Databricks notebook source
+# 1
 import json
 import logging
 import time
@@ -18,7 +19,8 @@ def _param(name):
         pass
     raise ValueError(f"Brak wymaganego parametru: '{name}'. Przekaż go przez Job lub utwórz widget.")
 
-
+# Databricks notebook source
+# 2
 DATABRICKS_WORKSPACE_ID = _param("zerobus_workspace_id")
 DATABRICKS_WORKSPACE_URL = _param("workspace_url").rstrip("/")
 DATABRICKS_REGION = _param("zerobus_region")
@@ -36,6 +38,8 @@ csv_api_app_url = _param("csv_api_app_url")
 CLIENT_ID = dbutils.secrets.get(scope="scope_blech", key="client-id-dbr-blech")
 CLIENT_SECRET = dbutils.secrets.get(scope="scope_blech", key="client-secret-dbr-blech")
 
+# Databricks notebook source
+# 3
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.{SCHEMA}")
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.hospital_silver")
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.hospital_gold")
@@ -52,6 +56,8 @@ spark.sql(f"GRANT USE CATALOG ON CATALOG {CATALOG} TO " + "`" + CLIENT_ID + "`;"
 spark.sql(f"GRANT USE SCHEMA ON SCHEMA {CATALOG}.{SCHEMA} TO " + "`" + CLIENT_ID + "`;").collect()
 spark.sql(f"GRANT MODIFY, SELECT ON TABLE {CATALOG}.{SCHEMA}.{TABLE} TO " + "`" + CLIENT_ID + "`;").collect()
 
+# Databricks notebook source
+# 4
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -92,7 +98,8 @@ def get_audience_token() -> str:
     resp.raise_for_status()
     return resp.json()["access_token"]
 
-
+# Databricks notebook source
+# 5
 stream = sdk.create_stream(client_id, client_secret, table_properties, options)
 
 headers = {"Authorization": f"Bearer {get_audience_token()}"}
@@ -139,7 +146,6 @@ try:
                 failed_total += send_batch(stream, items)
                 print("Data ingested")
                 items = []
-
 
 finally:
     try:
