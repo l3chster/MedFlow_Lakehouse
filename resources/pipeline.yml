@@ -3,6 +3,7 @@ resources:
     hospital_ingestion_pipeline:
       name: hospital_ingestion_pipeline
       catalog: ${var.catalog_name}
+      schema: ${resources.schemas.hospital_bronze.name}
       serverless: true
       root_path: ../hospital_ingestion_pipeline
       configuration:
