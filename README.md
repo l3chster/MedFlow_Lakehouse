@@ -1,92 +1,71 @@
 # hospital_emergency_databricks
 
-Lakeflow pipeline for hospital ER visits, ZeroBus ingest of patient rows from a Databricks App, and Lakehouse Federation to Postgres doctors.
+Medallion platform for hospital ER visits on Databricks (Azure), deployed with Asset Bundles and GitHub Actions.
 
-Push to `main` runs **tests only**. Resource deploy is a **manual** GitHub Action and does **not** start the Databricks job.
+- **Streaming:** patient rows are served by a Databricks App (`csv-api-app_hospital/`) and sent to bronze with ZeroBus.
+- **Batch:** doctors are read from Postgres via Lakehouse Federation (full table read on every pipeline update).
+- **Pipeline:** Lakeflow declarative pipeline bronze → silver (Auto CDC, expectations) → gold.
+- **Governance:** Unity Catalog, column masks + row filter on silver, secrets from an Azure Key Vault-backed scope.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A[CSV API App] -->|ZeroBus| B1[(patients_bronze)]
+    P[(Postgres / Neon)] -->|Lakehouse Federation| S2[doctors_silver]
+    B1 --> S1[patient_streaming_silver<br/>Auto CDC SCD1, masks + row filter]
+    S1 --> G[gold: visits_enriched + 5 aggregates]
+    S2 --> G
+    KV[Azure Key Vault<br/>secret scope] -.-> P
+    KV -.-> A
+```
+
+Job `hospital_ingest_and_refresh`: `external_table_connection` + `zerobus_patients` + `governance` (parallel) → `run_pipeline`.
 
 ## Layout
 
 | Path | Role |
 | --- | --- |
 | `databricks.yml` | Asset Bundle: targets `dev` / `prod` |
-| `hospital_ingestion_pipeline/` | Lakeflow transformations (bronze → silver → gold) |
+| `resources/` | job, pipeline, app, schemas + volumes |
+| `hospital_ingestion_pipeline/transformations/` | Lakeflow files; pure logic in `src/` (unit tested) |
+| `hospital_ingestion_pipeline/tests/` | pytest unit tests |
 | `ZEROBUS_patients_ingest.py` | ZeroBus load into `{catalog}.hospital_bronze.patients_bronze` |
-| `notebooks/ensure_foreign_catalog.py` | Postgres connection + foreign catalog `hospital_db` |
+| `EXTERNAL_TABLE_CONNECTION.py` | Postgres connection + foreign catalog `hospital_db` |
+| `GOVERNANCE.py` | creates mask / row-filter functions used by silver |
 | `csv-api-app_hospital/` | Databricks App that streams CSV rows |
-| `.github/workflows/pipeline_functions_test.yml` | pytest on push to `main` |
-| `.github/workflows/deploy.yml` | Manual `workflow_dispatch` deploy |
+| `.github/workflows/deploy.yml` | tests + bundle validate + deploy |
+| `docs/writeup.md` | design decisions, trade-offs, AI-assisted development |
 
-Unity Catalog `{catalog}.hospital_bronze|silver|gold` must already exist (or the deploying SP must be allowed to create schemas). Catalog itself is not created by the bundle.
+## CI/CD
 
-## CI vs CD
+One workflow, `.github/workflows/deploy.yml`:
 
-- **CI:** `push` to `main` → GitHub Actions *Pipeline tests* (pytest). No Databricks deploy.
-- **CD:** GitHub Actions *Deploy Databricks bundle*, only via **Run workflow** (`workflow_dispatch`). Input `target`: `dev` or `prod`.
-- Deploy runs `databricks bundle validate` then `databricks bundle deploy`. It does **not** run `databricks bundle run`.
-
-After deploy, start data refresh yourself in Databricks: job `hospital_ingest_and_refresh`.
-
-That job:
-
-1. `ensure_foreign_catalog` — `CREATE CONNECTION` / `CREATE FOREIGN CATALOG` for doctors
-2. `zerobus_patients` — ingest from the CSV app via ZeroBus (parallel with 1)
-3. `run_pipeline` — Lakeflow pipeline (depends on both)
-
-## GitHub Environments
-
-Create Environments named exactly `dev` and `prod`.
-
-On **prod**, enable **Required reviewers** so a deploy waits for approval.
-
-### Secrets (each environment)
-
-| Secret | Purpose |
+| Trigger | What runs |
 | --- | --- |
-| `DATABRICKS_CLIENT_ID` | Service principal application ID |
-| `DATABRICKS_CLIENT_SECRET` | Service principal secret |
+| Pull request to `main` | pytest, then `bundle validate -t dev` |
+| Push to `main` | pytest, then `bundle deploy -t dev` |
+| Manual run, `target_env = prod` | pytest, then (after Environment approval) `bundle validate` + `bundle deploy -t prod` |
 
-### Variables (each environment)
+PROD is only changed by this workflow. Deploy does not start the job; run `hospital_ingest_and_refresh` afterwards (UI, or `databricks bundle run hospital_ingest_and_refresh -t <target>`).
 
-| Variable | `dev` | `prod` |
-| --- | --- | --- |
-| `DATABRICKS_HOST` | `https://adb-7405618361895520.0.azuredatabricks.net` | prod workspace URL (required) |
-| `CATALOG_NAME` | optional (`dbr_dev` is in the bundle) | required, e.g. `dbr_prod` |
-| `ZEROBUS_WORKSPACE_ID` | optional | required numeric workspace id |
-| `ZEROBUS_REGION` | optional | required, e.g. `eastus` |
-| `CSV_API_APP_NAME` | optional (`csv-api-app`) | required, e.g. `csv-api-app-prod` |
-| `CSV_API_APP_URL` | optional | optional; if empty, derived as `https://{app}-{workspace_id}.0.azure.databricksapps.com/api/stream` |
+### GitHub setup
 
-The SP needs rights to deploy jobs, pipelines, apps, schemas, and volumes in the target workspace, plus access to secret scope `scope_blech`.
+Create Environments `dev` and `prod` (on `prod` enable **Required reviewers**). Secrets per environment, with suffix `_DEV` / `_PROD` as used in the workflow:
 
-## How to deploy
+`DATABRICKS_HOST_*`, `DATABRICKS_TOKEN_*`, `ZEROBUS_WORKSPACE_ID_*`, `CATALOG_NAME_*`, `CSV_API_APP_NAME_*`, `ZEROBUS_REGION_*`
 
-UI: Actions → **Deploy Databricks bundle** → **Run workflow** → choose `dev` or `prod`.
+## Governance
 
-CLI:
+- Column masks (`patient_id`, `first_initial`, `last_name`): shown only to group `hospital_admin`, others see `***`.
+- Row filter on `department_referral`: visible to `hospital_admin` or group `dept_<department>` (e.g. `dept_orthopedics`).
+- The pipeline's run-as principal must be in `hospital_admin`.
+- Gold tables contain no patient identifiers.
 
-```bash
-gh workflow run deploy.yml -f target=dev
-gh workflow run deploy.yml -f target=prod
-```
+## One-time setup in each workspace (not done by the bundle)
 
-Prod waits on Environment approval before the job runs.
-
-## Manual job run (after deploy)
-
-Workspace UI: Workflows → `hospital_ingest_and_refresh` → Run now.
-
-Or locally, after CLI auth (this is **not** part of CD):
-
-```bash
-databricks bundle run hospital_ingest_and_refresh -t dev
-databricks bundle run hospital_ingest_and_refresh -t prod \
-  --var "workspace_url=$DATABRICKS_HOST" \
-  --var "catalog_name=$CATALOG_NAME" \
-  --var "zerobus_workspace_id=$ZEROBUS_WORKSPACE_ID" \
-  --var "zerobus_region=$ZEROBUS_REGION" \
-  --var "csv_api_app_name=$CSV_API_APP_NAME" \
-  --var "csv_api_app_url=$CSV_API_APP_URL"
-```
+1. Create an **Azure Key Vault-backed** secret scope named `scope_blech` with keys: `postgresHost-blech`, `postgresUser-blech`, `postgresPassword-blech`, `sp-databricks-adls-appid`, `sp-databricks-adls-appkey`.
+2. Create the UC catalog (`dbr_dev` / `dbr_prod`) and the account groups `hospital_admin`, `dept_*`.
 
 ## Local tests
 

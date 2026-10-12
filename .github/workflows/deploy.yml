@@ -1,4 +1,4 @@
-name: Deploy Databricks bundle
+name: CI/CD Databricks bundle
 
 on:
   workflow_dispatch:
@@ -12,19 +12,35 @@ on:
           - dev
           - prod
 
-permissions: 
+permissions:
   contents: read
 
-jobs:  
+jobs:
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install "pyspark>=4.0,<4.1" pytest
+      - run: python -m pytest -v
+
   deploy-dev:
     name: Deploy to Dev
+    needs: test
     if: github.event.inputs.target_env == 'dev'
     runs-on: ubuntu-latest
-    env:      
+    environment: dev
+    env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_DEV }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_DEV }}
 
-      # variables      
       BUNDLE_VAR_workspace_url: ${{ secrets.DATABRICKS_HOST_DEV }}
       BUNDLE_VAR_zerobus_workspace_id: ${{ secrets.ZEROBUS_WORKSPACE_ID_DEV }}
       BUNDLE_VAR_catalog_name: ${{ secrets.CATALOG_NAME_DEV }}
@@ -41,18 +57,17 @@ jobs:
       - name: Deploy bundle (Dev)
         run: databricks bundle deploy --target dev
 
-  
   deploy-prod:
     name: Deploy to Prod
+    needs: test
     if: github.event.inputs.target_env == 'prod'
     runs-on: ubuntu-latest
     environment: prod
-    env:      
+    env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_PROD }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_PROD }}
 
-      #variables      
-      BUNDLE_VAR_workspace_url: ${{ secrets.DATABRICKS_HOST_DEV }}
+      BUNDLE_VAR_workspace_url: ${{ secrets.DATABRICKS_HOST_PROD }}
       BUNDLE_VAR_zerobus_workspace_id: ${{ secrets.ZEROBUS_WORKSPACE_ID_PROD }}
       BUNDLE_VAR_catalog_name: ${{ secrets.CATALOG_NAME_PROD }}
       BUNDLE_VAR_csv_api_app_name: ${{ secrets.CSV_API_APP_NAME_PROD }}

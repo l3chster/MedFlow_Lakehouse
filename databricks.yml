@@ -26,12 +26,17 @@ targets:
   dev:
     default: true
     mode: development
-    workspace:        
+    # host comes from DATABRICKS_HOST (set in CI per environment)
     variables:
       csv_api_app_url: "https://${var.csv_api_app_name}-${var.zerobus_workspace_id}.0.azure.databricksapps.com/api/stream"
 
   prod:
     mode: production
-    workspace:      
-    variables:      
+    workspace:
+      root_path: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}
+    permissions:
+      - group_name: users
+        level: CAN_VIEW
+    variables:
+      # check the app domain number (.0 / .1) in the PROD workspace
       csv_api_app_url: "https://${var.csv_api_app_name}-${var.zerobus_workspace_id}.1.azure.databricksapps.com/api/stream"

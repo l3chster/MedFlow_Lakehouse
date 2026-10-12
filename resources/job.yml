@@ -27,10 +27,15 @@ resources:
           environment_key: default
           spark_python_task:
             python_file: ../ZEROBUS_patients_ingest.py
+        - task_key: governance
+          environment_key: default
+          spark_python_task:
+            python_file: ../GOVERNANCE.py
         - task_key: run_pipeline
           depends_on:
             - task_key: external_table_connection
             - task_key: zerobus_patients
+            - task_key: governance
           pipeline_task:
             pipeline_id: ${resources.pipelines.hospital_ingestion_pipeline.id}
       environments:

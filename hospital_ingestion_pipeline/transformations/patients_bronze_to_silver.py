@@ -14,9 +14,33 @@ def patient_silver_clean():
     )
 
 
+MASK = f"MASK {catalog_name}.hospital_silver.mask_pii"
+
+# functions are created by GOVERNANCE.py (first task of the job)
 dp.create_streaming_table(
     name=f"{catalog_name}.hospital_silver.patient_streaming_silver",
     comment="transformed streaming data",
+    schema=f"""
+        patient_id STRING {MASK},
+        admission_datetime TIMESTAMP,
+        first_initial STRING {MASK},
+        last_name STRING {MASK},
+        gender STRING,
+        age INT,
+        race STRING,
+        department_referral STRING,
+        admission_flag BOOLEAN,
+        satisfaction_score INT,
+        wait_time INT,
+        coordinator_manager_flag BOOLEAN,
+        doctor_id STRING,
+        source_file STRING,
+        source_row INT,
+        visit_id STRING,
+        bronze_timestamp TIMESTAMP,
+        silver_timestamp TIMESTAMP
+    """,
+    row_filter=f"ROW FILTER {catalog_name}.hospital_silver.department_row_filter ON (department_referral)",
     table_properties={
         "quality": "silver",
         #"pipelines.reset.allowed": "false",
