@@ -8,6 +8,12 @@ resources:
       parameters:
         - name: catalog_name
           default: ${var.catalog_name}
+        - name: bronze_schema
+          default: ${resources.schemas.hospital_bronze.name}
+        - name: silver_schema
+          default: ${resources.schemas.hospital_silver.name}
+        - name: gold_schema
+          default: ${resources.schemas.hospital_gold.name}
         - name: workspace_url
           default: ${var.workspace_url}
         - name: zerobus_workspace_id

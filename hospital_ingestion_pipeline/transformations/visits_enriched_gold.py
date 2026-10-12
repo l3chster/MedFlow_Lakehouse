@@ -2,9 +2,11 @@ from pyspark import pipelines as dp
 from transformations.src.visits_enriched import transform_visits_enriched
 
 catalog_name = spark.conf.get("hospital.ingestion.catalog_name")
+gold_schema = spark.conf.get("hospital.ingestion.gold_schema")
+silver_schema = spark.conf.get("hospital.ingestion.silver_schema")
 
-SILVER = f"{catalog_name}.hospital_silver"
-GOLD = f"{catalog_name}.hospital_gold"
+SILVER = f"{catalog_name}.{silver_schema}"
+GOLD = f"{catalog_name}.{gold_schema}"
 
 
 @dp.materialized_view(name=f"{GOLD}.visits_enriched")

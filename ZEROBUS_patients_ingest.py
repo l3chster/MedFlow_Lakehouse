@@ -26,7 +26,9 @@ DATABRICKS_WORKSPACE_URL = _param("workspace_url").rstrip("/")
 DATABRICKS_REGION = _param("zerobus_region")
 APP_NAME = _param("csv_api_app_name")
 CATALOG = _param("catalog_name")
-SCHEMA = "hospital_bronze"
+SCHEMA = _param("bronze_schema")
+SILVER_SCHEMA = _param("silver_schema")
+GOLD_SCHEMA = _param("gold_schema")
 TABLE = "patients_bronze"
 
 ZEROBUS_INGEST_URL = (
@@ -41,8 +43,8 @@ CLIENT_SECRET = dbutils.secrets.get(scope="scope_blech", key="client-secret-dbr-
 # Databricks notebook source
 # 3
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.{SCHEMA}")
-spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.hospital_silver")
-spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.hospital_gold")
+spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.{SILVER_SCHEMA}")
+spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.{GOLD_SCHEMA}")
 
 spark.sql(f"""
         CREATE TABLE IF NOT EXISTS {CATALOG}.{SCHEMA}.{TABLE}

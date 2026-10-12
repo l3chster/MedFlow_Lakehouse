@@ -8,6 +8,9 @@ resources:
       root_path: ../hospital_ingestion_pipeline
       configuration:
         hospital.ingestion.catalog_name: ${var.catalog_name}
+        hospital.ingestion.bronze_schema: ${resources.schemas.hospital_bronze.name}
+        hospital.ingestion.silver_schema: ${resources.schemas.hospital_silver.name}
+        hospital.ingestion.gold_schema: ${resources.schemas.hospital_gold.name}
       libraries:
         - glob:
             include: ../hospital_ingestion_pipeline/transformations/**

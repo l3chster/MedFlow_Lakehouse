@@ -10,7 +10,8 @@
 # The pipeline's run-as principal must be a member of `hospital_admin`, otherwise gold is built from masked data.
 
 CATALOG = dbutils.widgets.get("catalog_name").strip()
-SCHEMA = f"{CATALOG}.hospital_silver"
+SILVER_SCHEMA = dbutils.widgets.get("silver_schema").strip()
+SCHEMA = f"{CATALOG}.{SILVER_SCHEMA}"
 
 spark.sql(f"""
 CREATE OR REPLACE FUNCTION {SCHEMA}.mask_pii(value STRING)

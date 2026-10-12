@@ -3,6 +3,8 @@ from pyspark.sql.functions import col
 from transformations.src.patient_silver import VALIDATIONS, transform_patient_silver
 
 catalog_name = spark.conf.get("hospital.ingestion.catalog_name")
+silver_schema = spark.conf.get("hospital.ingestion.silver_schema")
+bronze_schema = spark.conf.get("hospital.ingestion.bronze_schema")
 
 
 @dp.view
@@ -10,15 +12,15 @@ catalog_name = spark.conf.get("hospital.ingestion.catalog_name")
 @dp.expect_all(VALIDATIONS)
 def patient_silver_clean():
     return transform_patient_silver(
-        spark.readStream.table(f"{catalog_name}.hospital_bronze.patients_bronze")
+        spark.readStream.table(f"{catalog_name}.{bronze_schema}.patients_bronze")
     )
 
 
-MASK = f"MASK {catalog_name}.hospital_silver.mask_pii"
+MASK = f"MASK {catalog_name}.{silver_schema}.mask_pii"
 
 # functions are created by GOVERNANCE.py (first task of the job)
 dp.create_streaming_table(
-    name=f"{catalog_name}.hospital_silver.patient_streaming_silver",
+    name=f"{catalog_name}.{silver_schema}.patient_streaming_silver",
     comment="transformed streaming data",
     schema=f"""
         patient_id STRING {MASK},
@@ -40,7 +42,7 @@ dp.create_streaming_table(
         bronze_timestamp TIMESTAMP,
         silver_timestamp TIMESTAMP
     """,
-    row_filter=f"ROW FILTER {catalog_name}.hospital_silver.department_row_filter ON (department_referral)",
+    row_filter=f"ROW FILTER {catalog_name}.{silver_schema}.department_row_filter ON (department_referral)",
     table_properties={
         "quality": "silver",
         #"pipelines.reset.allowed": "false",
@@ -50,7 +52,7 @@ dp.create_streaming_table(
 
 
 dp.create_auto_cdc_flow(
-    target=f"{catalog_name}.hospital_silver.patient_streaming_silver",
+    target=f"{catalog_name}.{silver_schema}.patient_streaming_silver",
     source="patient_silver_clean",
     keys=["visit_id"],
     sequence_by=col("bronze_timestamp"),
