@@ -1,5 +1,6 @@
 import json
 import logging
+import time
 from zerobus.sdk.sync import ZerobusSdk
 from zerobus.sdk.shared import RecordType, StreamConfigurationOptions, TableProperties, ZerobusException
 from databricks.sdk import WorkspaceClient
@@ -96,6 +97,7 @@ stream = sdk.create_stream(client_id, client_secret, table_properties, options)
 headers = {"Authorization": f"Bearer {get_audience_token()}"}
 url = csv_api_app_url
 BATCH_SIZE = 50
+MAX_RUNTIME_SECONDS = 120
 
 items = []
 failed_total = []
@@ -111,12 +113,18 @@ def send_batch(stream, items):
             failed.append(record)
     return failed
 
+deadline = time.monotonic() + MAX_RUNTIME_SECONDS
+
 try:
-    with requests.get(url, headers=headers, stream=True, timeout=(5, 60)) as r:
+    with requests.get(url, headers=headers, stream=True, timeout=(5, 30)) as r:
         r.raise_for_status()
         r.encoding = "utf-8"
 
         for line in r.iter_lines(decode_unicode=True):
+            if time.monotonic() >= deadline:
+                print(f"Time limit of {MAX_RUNTIME_SECONDS}s reached, stopping ingestion.")
+                break
+
             if not line:
                 continue
 
