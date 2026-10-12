@@ -44,7 +44,7 @@ def test_doctor_validations_accept_and_reject(spark):
     )
     for name, rule in DOCTOR_VALIDATIONS.items():
         bad = {r.doctor_id for r in df.where(f"NOT ({rule})").collect()}
-        expected = {"doctor id format": {"BAD"}, "last name not null": {"DOC-2"},
+        expected = {"doctor_id format": {"BAD"}, "last name not null": {"DOC-2"},
                     "experience non-negative": {"DOC-3"}}[name]
         assert bad == expected, name
 
