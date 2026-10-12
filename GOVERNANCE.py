@@ -1,3 +1,4 @@
+# Databricks notebook source
 # Creates the Unity Catalog functions used for column masking (CLS) and row filtering (RLS).
 # They are attached to hospital_silver.patient_streaming_silver in
 # hospital_ingestion_pipeline/transformations/patients_bronze_to_silver.py.

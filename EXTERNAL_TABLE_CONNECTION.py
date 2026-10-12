@@ -1,3 +1,4 @@
+# Databricks notebook source
 # scope_blech must be an Azure Key Vault-backed secret scope
 host = dbutils.secrets.get("scope_blech", "postgresHost-blech")
 user = dbutils.secrets.get("scope_blech", "postgresUser-blech")
