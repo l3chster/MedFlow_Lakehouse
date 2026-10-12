@@ -33,8 +33,8 @@ ZEROBUS_INGEST_URL = (
 
 csv_api_app_url = _param("csv_api_app_url")    
 
-CLIENT_ID = dbutils.secrets.get(scope="scope_blech", key="sp-databricks-adls-appid")
-CLIENT_SECRET = dbutils.secrets.get(scope="scope_blech", key="sp-databricks-adls-appkey")
+CLIENT_ID = dbutils.secrets.get(scope="scope_blech", key="client-id-dbr-blech")
+CLIENT_SECRET = dbutils.secrets.get(scope="scope_blech", key="client-secret-dbr-blech")
 
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.{SCHEMA}")
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.hospital_silver")
