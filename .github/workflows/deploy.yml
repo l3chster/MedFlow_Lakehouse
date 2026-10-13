@@ -65,7 +65,7 @@ jobs:
     environment: prod
     env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_PROD }}
-      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_PROD }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_DEV }}
 
       BUNDLE_VAR_workspace_url: ${{ secrets.DATABRICKS_HOST_PROD }}
       BUNDLE_VAR_zerobus_workspace_id: ${{ secrets.ZEROBUS_WORKSPACE_ID_PROD }}
