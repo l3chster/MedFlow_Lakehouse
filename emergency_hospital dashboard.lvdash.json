@@ -1,0 +1,949 @@
+{
+  "datasets": [
+    {
+      "name": "d47e6080",
+      "displayName": "coordinator_impact",
+      "config": {
+        "version": "1.1",
+        "source": "dbr_dev.hospital_gold.coordinator_impact",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "d5d5bd79",
+      "displayName": "department_monthly_stats",
+      "config": {
+        "version": "1.1",
+        "source": "dbr_dev.hospital_gold.department_monthly_stats",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "b6df5bae",
+      "displayName": "doctor_performance",
+      "config": {
+        "version": "1.1",
+        "source": "dbr_dev.hospital_gold.doctor_performance",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ed7e75d3",
+      "displayName": "visits_enriched",
+      "config": {
+        "version": "1.1",
+        "source": "dbr_dev.hospital_gold.visits_enriched",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "b03b6342",
+      "displayName": "wait_time_by_hour_weekday",
+      "config": {
+        "version": "1.1",
+        "source": "dbr_dev.hospital_gold.wait_time_by_hour_weekday",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "19812c5c",
+      "displayName": "wait_vs_satisfaction",
+      "config": {
+        "version": "1.1",
+        "source": "dbr_dev.hospital_gold.wait_vs_satisfaction",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "c9dbe458",
+      "displayName": "satisfaction_in_total per department",
+      "queryLines": [
+        "SELECT department_referral, ROUND(AVG(admission_rate_pct),2) AS total_admission_rate,\r\n",
+        "ROUND(AVG(avg_satisfaction),2) AS total_satisfaction FROM dbr_dev.hospital_gold.department_monthly_stats\r\n",
+        "GROUP BY department_referral\r\n"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "d0e94727",
+      "displayName": "wait_time for department",
+      "layout": [
+        {
+          "widget": {
+            "name": "4e3a755c",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ed7e75d3",
+                  "fields": [
+                    {
+                      "name": "admission_month",
+                      "expression": "`admission_month`"
+                    },
+                    {
+                      "name": "wait_time",
+                      "expression": "`wait_time`"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`department` IN ('Cardiology')"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Average Wait Time Cardiology\n<p>&nbsp;</p>\n",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "admission_month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "wait_time",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 4,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "aec889ef",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ed7e75d3",
+                  "fields": [
+                    {
+                      "name": "admission_month",
+                      "expression": "`admission_month`"
+                    },
+                    {
+                      "name": "wait_time",
+                      "expression": "`wait_time`"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`department` IN ('Emergency Medicine')"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Average Wait Time Cardiology\n<p>&nbsp;</p>\n",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "admission_month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "wait_time",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 4,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "1a2c04d2",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ed7e75d3",
+                  "fields": [
+                    {
+                      "name": "admission_month",
+                      "expression": "`admission_month`"
+                    },
+                    {
+                      "name": "wait_time",
+                      "expression": "`wait_time`"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`department` IN ('Neurology')"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Average Wait Time Neurology\n<p>&nbsp;</p>\n",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "admission_month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "wait_time",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 5,
+            "width": 4,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "e44d36c2",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ed7e75d3",
+                  "fields": [
+                    {
+                      "name": "admission_month",
+                      "expression": "`admission_month`"
+                    },
+                    {
+                      "name": "wait_time",
+                      "expression": "`wait_time`"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`department` IN ('Physiotherapy')"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Average Wait Time Physiotherapy\n<p>&nbsp;</p>\n",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "admission_month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "wait_time",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 5,
+            "width": 4,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "fa82eb22",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ed7e75d3",
+                  "fields": [
+                    {
+                      "name": "admission_month",
+                      "expression": "`admission_month`"
+                    },
+                    {
+                      "name": "wait_time",
+                      "expression": "`wait_time`"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`department` IN ('Gastroenterology')"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Average Wait Time Gastroenterology\n<p>&nbsp;</p>\n\n<p>&nbsp;</p>\n",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "admission_month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "wait_time",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 0,
+            "width": 4,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "3547c44a",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ed7e75d3",
+                  "fields": [
+                    {
+                      "name": "admission_month",
+                      "expression": "`admission_month`"
+                    },
+                    {
+                      "name": "wait_time",
+                      "expression": "`wait_time`"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`department` IN ('General Practice')"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Average Wait Time General Practice\n<p>&nbsp;</p>\n",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "admission_month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "wait_time",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 4,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "3f357566",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ed7e75d3",
+                  "fields": [
+                    {
+                      "name": "admission_month",
+                      "expression": "`admission_month`"
+                    },
+                    {
+                      "name": "wait_time",
+                      "expression": "`wait_time`"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`department` IN ('Orthopedics')"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Average Wait Time Orthopedics\n<p>&nbsp;</p>\n",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "admission_month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "wait_time",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 4,
+            "height": 5
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "fbe2b690",
+      "displayName": "admission_rate and satisfaction per department",
+      "layout": [
+        {
+          "widget": {
+            "name": "a0239700",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c9dbe458",
+                  "fields": [
+                    {
+                      "name": "department_referral",
+                      "expression": "`department_referral`"
+                    },
+                    {
+                      "name": "total_satisfaction",
+                      "expression": "`total_satisfaction`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "department_referral",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "total_satisfaction",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "department_referral",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "3ab01159",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c9dbe458",
+                  "fields": [
+                    {
+                      "name": "department_referral",
+                      "expression": "`department_referral`"
+                    },
+                    {
+                      "name": "sum(total_admission_rate)",
+                      "expression": "SUM(`total_admission_rate`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "department_referral",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(total_admission_rate)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "department_referral",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 7
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "3ab0ac03",
+      "displayName": "Sum of visits per month",
+      "layout": [
+        {
+          "widget": {
+            "name": "e50cfb42",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d5d5bd79",
+                  "fields": [
+                    {
+                      "name": "monthly(admission_month)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `admission_month`)"
+                    },
+                    {
+                      "name": "sum(visits)",
+                      "expression": "SUM(`visits`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(admission_month)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(visits)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 10,
+            "height": 7
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "50d69638",
+      "displayName": "avg wait time heatmap",
+      "layout": [
+        {
+          "widget": {
+            "name": "afdfc3d7",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "b03b6342",
+                  "fields": [
+                    {
+                      "name": "sum(avg_wait_time)",
+                      "expression": "SUM(`avg_wait_time`)"
+                    },
+                    {
+                      "name": "weekday_num",
+                      "expression": "`weekday_num`"
+                    },
+                    {
+                      "name": "admission_hour",
+                      "expression": "`admission_hour`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "heatmap",
+              "encodings": {
+                "x": {
+                  "fieldName": "weekday_num",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "admission_hour",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "sum(avg_wait_time)",
+                  "scale": {
+                    "type": "quantitative",
+                    "colorRamp": {
+                      "mode": "single-hue",
+                      "baseColor": {
+                        "themeColorType": "visualizationColors",
+                        "position": 4
+                      }
+                    }
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 11,
+            "height": 9
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "2ce82621",
+      "displayName": "Doctors leaderboard",
+      "layout": [
+        {
+          "widget": {
+            "name": "05c5b62a",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "b6df5bae",
+                  "fields": [
+                    {
+                      "name": "doctor_first_name",
+                      "expression": "`doctor_first_name`"
+                    },
+                    {
+                      "name": "doctor_last_name",
+                      "expression": "`doctor_last_name`"
+                    },
+                    {
+                      "name": "subspecialty",
+                      "expression": "`subspecialty`"
+                    },
+                    {
+                      "name": "avg_wait_time",
+                      "expression": "`avg_wait_time`"
+                    },
+                    {
+                      "name": "avg_satisfaction",
+                      "expression": "`avg_satisfaction`"
+                    },
+                    {
+                      "name": "admission_rate_pct",
+                      "expression": "`admission_rate_pct`"
+                    },
+                    {
+                      "name": "years_of_experience",
+                      "expression": "`years_of_experience`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "doctor_first_name"
+                  },
+                  {
+                    "fieldName": "doctor_last_name"
+                  },
+                  {
+                    "fieldName": "subspecialty"
+                  },
+                  {
+                    "fieldName": "avg_wait_time"
+                  },
+                  {
+                    "fieldName": "avg_satisfaction"
+                  },
+                  {
+                    "fieldName": "admission_rate_pct"
+                  },
+                  {
+                    "fieldName": "years_of_experience"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 7
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
