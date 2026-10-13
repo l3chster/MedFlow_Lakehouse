@@ -1,4 +1,4 @@
-# 🏥 hospital_emergency_databricks
+# 🏥 MedFlow Lakehouse
 
 End-to-end **medallion data platform for hospital emergency-room visits** on Databricks (Azure), deployed to DEV and PROD with Databricks Asset Bundles and GitHub Actions.
 
