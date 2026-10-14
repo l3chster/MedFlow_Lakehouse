@@ -44,6 +44,16 @@ resources:
             - task_key: governance
           pipeline_task:
             pipeline_id: ${resources.pipelines.hospital_ingestion_pipeline.id}
+        - task_key: refresh_vector_index
+          depends_on:
+            - task_key: run_pipeline
+          environment_key: default
+          notebook_task:
+            notebook_path: ../REFRESH_VECTOR_INDEX.py
+            base_parameters:
+              vector_search_endpoint: ${var.vector_search_endpoint}
+              embedding_model: ${var.embedding_model}
+              rag_app_name: ${var.rag_app_name}
       environments:
         - environment_key: default
           spec:

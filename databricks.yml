@@ -21,6 +21,18 @@ variables:
   csv_api_app_url:
     description: Full /api/stream URL of the CSV app
     default: "https://${var.csv_api_app_name}-${var.zerobus_workspace_id}.0.azure.databricksapps.com/api/stream"
+  vector_search_endpoint:
+    description: Vector Search endpoint hosting the RAG index
+    default: hospital-rag-endpoint
+  embedding_model:
+    description: Embedding model endpoint for the vector index
+    default: databricks-gte-large-en
+  chat_model:
+    description: Foundation Model serving endpoint used by the RAG app
+    default: databricks-meta-llama-3-3-70b-instruct
+  rag_app_name:
+    description: Databricks App name of the RAG assistant
+    default: rag-assistant
 
 targets:
   dev:
