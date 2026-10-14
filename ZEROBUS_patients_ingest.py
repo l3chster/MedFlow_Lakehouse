@@ -31,8 +31,10 @@ SILVER_SCHEMA = _param("silver_schema")
 GOLD_SCHEMA = _param("gold_schema")
 TABLE = "patients_bronze"
 
+# Azure: <id>.zerobus.<region>.azuredatabricks.net, AWS (np. Free Edition): <id>.zerobus.<region>.cloud.databricks.com
+ZEROBUS_DOMAIN = "azuredatabricks.net" if "azuredatabricks.net" in DATABRICKS_WORKSPACE_URL else "cloud.databricks.com"
 ZEROBUS_INGEST_URL = (
-    f"https://{DATABRICKS_WORKSPACE_ID}.zerobus.{DATABRICKS_REGION}.azuredatabricks.net"
+    f"https://{DATABRICKS_WORKSPACE_ID}.zerobus.{DATABRICKS_REGION}.{ZEROBUS_DOMAIN}"
 )
 
 csv_api_app_url = _param("csv_api_app_url")    

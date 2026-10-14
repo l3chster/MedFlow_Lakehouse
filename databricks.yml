@@ -13,7 +13,7 @@ variables:
   zerobus_workspace_id:
     description: Numeric workspace id in the Zerobus ingest hostname
   zerobus_region:
-    description: Azure region segment in the Zerobus ingest hostname
+    description: Cloud region segment in the Zerobus ingest hostname (Azure e.g. eastus, AWS e.g. us-east-2)
     default: eastus
   csv_api_app_name:
     description: Databricks App name that streams CSV rows
