@@ -40,7 +40,8 @@ targets:
     mode: development
     # host comes from DATABRICKS_HOST (set in CI per environment)
     variables:
-      csv_api_app_url: "https://${var.csv_api_app_name}-${var.zerobus_workspace_id}.0.azure.databricksapps.com/api/stream"
+      # dev workspace is on AWS: <app>-<workspace_id>.aws.databricksapps.com
+      csv_api_app_url: "https://${var.csv_api_app_name}-${var.zerobus_workspace_id}.aws.databricksapps.com/api/stream"
 
   prod:
     mode: production   
