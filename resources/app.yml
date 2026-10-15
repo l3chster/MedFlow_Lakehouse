@@ -17,19 +17,25 @@ resources:
             securable_full_name: ${var.catalog_name}.${resources.schemas.hospital_bronze.name}.${resources.volumes.csv_streaming.name}
             securable_type: VOLUME
             permission: READ_VOLUME
-    rag_assistant:
-      name: ${var.rag_app_name}
-      description: RAG assistant answering questions about ER operations
-      source_code_path: ../rag_assistant_app
-      resources:
-        - name: chat_model
-          description: LLM endpoint used to answer questions
-          serving_endpoint:
-            name: ${var.chat_model}
-            permission: CAN_QUERY
-        - name: rag_index
-          description: Vector Search index with gold-layer insights
-          uc_securable:
-            securable_full_name: ${var.catalog_name}.${resources.schemas.hospital_gold.name}.rag_insight_index
-            securable_type: TABLE
-            permission: SELECT
+
+# RAG runs only on dev (prod workspace cannot host Vector Search / the RAG app)
+targets:
+  dev:
+    resources:
+      apps:
+        rag_assistant:
+          name: ${var.rag_app_name}
+          description: RAG assistant answering questions about ER operations
+          source_code_path: ../rag_assistant_app
+          resources:
+            - name: chat_model
+              description: LLM endpoint used to answer questions
+              serving_endpoint:
+                name: ${var.chat_model}
+                permission: CAN_QUERY
+            - name: rag_index
+              description: Vector Search index with gold-layer insights
+              uc_securable:
+                securable_full_name: ${var.catalog_name}.${resources.schemas.hospital_gold.name}.rag_insight_index
+                securable_type: TABLE
+                permission: SELECT
