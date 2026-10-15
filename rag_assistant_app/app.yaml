@@ -1,6 +1,6 @@
 command: ["streamlit", "run", "app.py", "--server.port", "8000", "--server.address", "0.0.0.0"]
 env:
   - name: VECTOR_INDEX_NAME
-    value: "dbr_dev.hospital_gold.rag_insight_index"
+    valueFrom: rag_index
   - name: CHAT_MODEL
     valueFrom: chat_model

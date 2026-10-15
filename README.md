@@ -15,7 +15,7 @@ End-to-end **medallion data platform for hospital emergency-room visits** on Dat
 ## Architecture
 
 ```mermaid
-%%{init: {"flowchart": {"nodeSpacing": 20, "rankSpacing": 30, "padding": 6}, "themeVariables": {"fontSize": "13px", "edgeLabelBackground": "#585858"}, "themeCSS": ".edgeLabel p, .edgeLabel span, .labelBkg { background-color: #585858 !important; color: #ffffff !important; } .edgeLabel rect { fill: #585858 !important; opacity: 1 !important; }"}}%%
+%%{init: {"flowchart": {"nodeSpacing": 15, "rankSpacing": 25, "padding": 16, "subGraphTitleMargin": {"top": 8, "bottom": 20}}, "themeVariables": {"fontSize": "17px", "edgeLabelBackground": "#585858"}, "themeCSS": ".edgeLabel p, .edgeLabel span, .labelBkg { background-color: #585858 !important; color: #ffffff !important; } .edgeLabel rect { fill: #585858 !important; opacity: 1 !important; } .cluster-label, .cluster-label span, .cluster-label p { font-size: 21px !important; font-weight: 700 !important; color: #ea580c !important; fill: #ea580c !important; } .cluster-label foreignObject { overflow: visible !important; }"}}%%
 flowchart LR
     KV["Key Vault"]
 
