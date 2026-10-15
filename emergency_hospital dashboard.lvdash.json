@@ -3,135 +3,51 @@
     {
       "name": "d47e6080",
       "displayName": "coordinator_impact",
-      "config": {
-        "version": "1.1",
-        "source": "dbr_dev.hospital_gold.coordinator_impact",
-        "dimensions": [
-          {
-            "expr": "source.*"
-          }
-        ],
-        "measures": [
-          {
-            "name": "count",
-            "expr": "COUNT(*)",
-            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
-            "displayName": "Count"
-          }
-        ]
-      }
+      "queryLines": [
+        "SELECT * FROM dbr_dev.dev_bartek1_0_hospital_gold.coordinator_impact"
+      ]
     },
     {
       "name": "d5d5bd79",
       "displayName": "department_monthly_stats",
-      "config": {
-        "version": "1.1",
-        "source": "dbr_dev.hospital_gold.department_monthly_stats",
-        "dimensions": [
-          {
-            "expr": "source.*"
-          }
-        ],
-        "measures": [
-          {
-            "name": "count",
-            "expr": "COUNT(*)",
-            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
-            "displayName": "Count"
-          }
-        ]
-      }
+      "queryLines": [
+        "SELECT * FROM dbr_dev.dev_bartek1_0_hospital_gold.department_monthly_stats"
+      ]
     },
     {
       "name": "b6df5bae",
       "displayName": "doctor_performance",
-      "config": {
-        "version": "1.1",
-        "source": "dbr_dev.hospital_gold.doctor_performance",
-        "dimensions": [
-          {
-            "expr": "source.*"
-          }
-        ],
-        "measures": [
-          {
-            "name": "count",
-            "expr": "COUNT(*)",
-            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
-            "displayName": "Count"
-          }
-        ]
-      }
+      "queryLines": [
+        "SELECT * FROM dbr_dev.dev_bartek1_0_hospital_gold.doctor_performance"
+      ]
     },
     {
       "name": "ed7e75d3",
       "displayName": "visits_enriched",
-      "config": {
-        "version": "1.1",
-        "source": "dbr_dev.hospital_gold.visits_enriched",
-        "dimensions": [
-          {
-            "expr": "source.*"
-          }
-        ],
-        "measures": [
-          {
-            "name": "count",
-            "expr": "COUNT(*)",
-            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
-            "displayName": "Count"
-          }
-        ]
-      }
+      "queryLines": [
+        "SELECT * FROM dbr_dev.dev_bartek1_0_hospital_gold.visits_enriched"
+      ]
     },
     {
       "name": "b03b6342",
       "displayName": "wait_time_by_hour_weekday",
-      "config": {
-        "version": "1.1",
-        "source": "dbr_dev.hospital_gold.wait_time_by_hour_weekday",
-        "dimensions": [
-          {
-            "expr": "source.*"
-          }
-        ],
-        "measures": [
-          {
-            "name": "count",
-            "expr": "COUNT(*)",
-            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
-            "displayName": "Count"
-          }
-        ]
-      }
+      "queryLines": [
+        "SELECT * FROM dbr_dev.dev_bartek1_0_hospital_gold.wait_time_by_hour_weekday"
+      ]
     },
     {
       "name": "19812c5c",
       "displayName": "wait_vs_satisfaction",
-      "config": {
-        "version": "1.1",
-        "source": "dbr_dev.hospital_gold.wait_vs_satisfaction",
-        "dimensions": [
-          {
-            "expr": "source.*"
-          }
-        ],
-        "measures": [
-          {
-            "name": "count",
-            "expr": "COUNT(*)",
-            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
-            "displayName": "Count"
-          }
-        ]
-      }
+      "queryLines": [
+        "SELECT * FROM dbr_dev.dev_bartek1_0_hospital_gold.wait_vs_satisfaction"
+      ]
     },
     {
       "name": "c9dbe458",
       "displayName": "satisfaction_in_total per department",
       "queryLines": [
         "SELECT department_referral, ROUND(AVG(admission_rate_pct),2) AS total_admission_rate,\r\n",
-        "ROUND(AVG(avg_satisfaction),2) AS total_satisfaction FROM dbr_dev.hospital_gold.department_monthly_stats\r\n",
+        "ROUND(AVG(avg_satisfaction),2) AS total_satisfaction FROM dbr_dev.dev_bartek1_0_hospital_gold.department_monthly_stats\r\n",
         "GROUP BY department_referral\r\n"
       ]
     }
