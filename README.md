@@ -15,43 +15,42 @@ End-to-end **medallion data platform for hospital emergency-room visits** on Dat
 ## Architecture
 
 ```mermaid
-flowchart TB
-    KV[" Azure Key Vault<br/>secret scope"]
+%%{init: {"flowchart": {"nodeSpacing": 20, "rankSpacing": 30, "padding": 6}, "themeVariables": {"fontSize": "13px", "edgeLabelBackground": "#585858"}, "themeCSS": ".edgeLabel p, .edgeLabel span, .labelBkg { background-color: #585858 !important; color: #ffffff !important; } .edgeLabel rect { fill: #585858 !important; opacity: 1 !important; }"}}%%
+flowchart LR
+    KV["Key Vault"]
 
-    subgraph SRC["  Sources"]
-        A["CSV API App<br/>(Databricks App)"]
-        P[("Postgres  Neon")]
+    subgraph SRC["Sources"]
+        A["CSV API App"]
+        P[("Postgres Neon")]
     end
 
-    subgraph BRZ["   Bronze - hospital_bronze"]
+    subgraph BRZ["Bronze"]
         B1[("patients_bronze")]
     end
 
-    subgraph SLV["  Silver - hospital_silver"]
-        S1["patient_streaming_silver<br/>Auto CDC SCD1 · masks · row filter"]
-        S2["doctors_silver<br/>4 expectations"]
+    subgraph SLV["Silver"]
+        S1["patient_streaming_silver<br/>CDC · masks · row filter"]
+        S2["doctors_silver"]
     end
 
-    subgraph GLD["  Gold - hospital_gold"]
+    subgraph GLD["Gold"]
         G["visits_enriched<br/>+ 5 aggregates"]
     end
 
-    subgraph USE["5  Consumers"]
-        DB[" AI/BI Dashboard"]
-        D[("rag_insight_docs_vs")]
-        V[["Vector Search index<br/>rag_insight_index"]]
-        R[" RAG Assistant App<br/>Streamlit + Llama 3.3 70B"]
+    subgraph USE["Consumers"]
+        DB["AI/BI Dashboard"]
+        V[["Vector Search index"]]
+        R["RAG Assistant App"]
     end
 
     KV -.-> A & P
     A -->|ZeroBus| B1
-    P -->|Lakehouse Federation| S2
+    P -->|Federation| S2
     B1 --> S1
     S1 & S2 --> G
     G --> DB
-    G -->|"insight docs (MERGE)"| D
-    D -->|"Delta Sync  gte-large-en"| V
-    V -->|"top-6 retrieval"| R
+    G -->|RAG docs| V
+    V -->|top-6| R
 
     classDef src fill:#dbeafe,stroke:#3b82f6,color:#111
     classDef bronze fill:#f3dcc4,stroke:#b8732e,color:#111
@@ -63,7 +62,7 @@ flowchart TB
     class B1 bronze
     class S1,S2 silver
     class G gold
-    class DB,D,V,R use
+    class DB,V,R use
     class KV sec
 ```
 
